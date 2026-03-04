@@ -1,0 +1,14 @@
+seed: 42
+
+adapter_path: ../output/prometheus_l4_qlora
+base_model_name: prometheus-eval/prometheus-7b-v2.0
+trust_remote_code: false
+
+input_file: ../data/validation_dataset_sample.json
+output_file: ../output/submission_l4_qlora.json
+
+batch_size: 4
+max_new_tokens: 220
+temperature: 0.0
+
+default_pred_if_missing: "0"

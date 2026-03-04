@@ -1,0 +1,8 @@
+ground_truth_file: ../data/dataset_sample.json
+submission_file: ../output/submission_l4_qlora.json
+
+# Judge model handled by pydantic-ai model string
+judge_model: openai:gpt-5-mini
+
+include_reasons: true
+output_report_json: ../output/eval_llm_judge_report.json

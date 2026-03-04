@@ -1,0 +1,40 @@
+seed: 42
+
+model_name: prometheus-eval/prometheus-7b-v2.0
+trust_remote_code: false
+
+train_file: ../data/dataset_sample.json
+output_dir: ../output/prometheus_l4_qlora
+
+max_seq_length: 1536
+val_size: 0.15
+
+train_batch_size: 2
+eval_batch_size: 2
+gradient_accumulation_steps: 16
+learning_rate: 2.0e-4
+num_train_epochs: 2
+warmup_ratio: 0.03
+weight_decay: 0.01
+max_grad_norm: 0.3
+
+logging_steps: 10
+eval_steps: 50
+save_steps: 50
+save_total_limit: 2
+
+lora_r: 32
+lora_alpha: 64
+lora_dropout: 0.05
+target_modules:
+  - q_proj
+  - k_proj
+  - v_proj
+  - o_proj
+
+use_4bit: true
+bnb_4bit_quant_type: nf4
+bnb_4bit_use_double_quant: true
+
+system_prompt: null
+user_prompt: null
