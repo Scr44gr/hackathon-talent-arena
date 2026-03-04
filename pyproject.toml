@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "QLoRA pipeline for training and evaluating LLMs on judge tasks."
 requires-python = ">=3.11"
 dependencies = [
-  "accelerate>=1.1.0",
+  "accelerate>=1.12.0",
   "bitsandbytes>=0.45.0",
   "datasets>=3.1.0",
   "numpy>=1.26.0",
@@ -16,9 +16,9 @@ dependencies = [
   "python-dotenv>=1.0.0",
   "pyyaml>=6.0.0",
   "scikit-learn>=1.5.0",
-  "torch>=2.5.0",
-  "transformers>=4.47.0",
-  "trl>=0.12.0"
+  "torch>=2.6.0",
+  "transformers>=5.2.0",
+  "trl>=0.29.0"
 ]
 
 [project.scripts]

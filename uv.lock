@@ -779,7 +779,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "accelerate", specifier = ">=1.1.0" },
+    { name = "accelerate", specifier = ">=1.12.0" },
     { name = "bitsandbytes", specifier = ">=0.45.0" },
     { name = "datasets", specifier = ">=3.1.0" },
     { name = "numpy", specifier = ">=1.26.0" },
@@ -791,9 +791,9 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "pyyaml", specifier = ">=6.0.0" },
     { name = "scikit-learn", specifier = ">=1.5.0" },
-    { name = "torch", specifier = ">=2.5.0" },
-    { name = "transformers", specifier = ">=4.47.0" },
-    { name = "trl", specifier = ">=0.12.0" },
+    { name = "torch", specifier = ">=2.6.0" },
+    { name = "transformers", specifier = ">=5.2.0" },
+    { name = "trl", specifier = ">=0.29.0" },
 ]
 
 [[package]]
