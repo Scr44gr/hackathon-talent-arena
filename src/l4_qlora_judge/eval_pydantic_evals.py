@@ -150,12 +150,12 @@ def report_to_jsonable(report: Any) -> dict[str, Any]:
     return {"cases": rows}
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         description="Evaluate submission with Pydantic Evals LLMJudge"
     )
     parser.add_argument("--config", required=True, help="Path to eval YAML config")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     cfg = load_config(args.config)
     cases = build_eval_cases(cfg.ground_truth_file, cfg.submission_file)

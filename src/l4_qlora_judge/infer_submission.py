@@ -116,10 +116,10 @@ def quick_metrics(items: list[MetricsRow]) -> dict[str, float]:
     return {"accuracy_po": acc, "robustness": robust, "variability": var}
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Inference for hackathon submission")
     parser.add_argument("--config", required=True, help="Path to YAML config")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
     cfg = load_config(args.config)

@@ -74,10 +74,10 @@ def to_training_row(
     return {"prompt_sft": text}
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Train QLoRA judge model on L4")
     parser.add_argument("--config", required=True, help="Path to YAML config")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
     cfg = load_config(args.config)
