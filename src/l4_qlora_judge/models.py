@@ -129,6 +129,44 @@ class TrainConfig(JudgeBaseModel):
         )
 
 
+class PreprocessConfig(JudgeBaseModel):
+    seed: int = 42
+    input_file: str = "../data/dataset_sample.json"
+    output_dir: str = "../data/processed"
+    val_size: float = 0.15
+    test_size: float = 0.0
+    drop_unlabeled: bool = True
+    dedupe_by_message_id: bool = True
+    dedupe_by_content: bool = True
+    min_question_chars: int = 8
+    min_answer_chars: int = 8
+    stratify_by_category: bool = True
+
+    @field_validator("val_size", "test_size")
+    @classmethod
+    def validate_split_size(cls, value: float) -> float:
+        if value < 0 or value >= 1:
+            raise ValueError("split sizes must be >= 0 and < 1")
+        return value
+
+    @field_validator("min_question_chars", "min_answer_chars")
+    @classmethod
+    def validate_min_chars(cls, value: int) -> int:
+        if value < 0:
+            raise ValueError("minimum char limits must be >= 0")
+        return value
+
+    def resolve_paths(self, cfg_dir: Path) -> "PreprocessConfig":
+        if (self.val_size + self.test_size) >= 1:
+            raise ValueError("val_size + test_size must be < 1")
+        return self.model_copy(
+            update={
+                "input_file": str((cfg_dir / self.input_file).resolve()),
+                "output_dir": str((cfg_dir / self.output_dir).resolve()),
+            }
+        )
+
+
 class InferConfig(JudgeBaseModel):
     seed: int = 42
     adapter_path: str = "../output/prometheus_l4_qlora"
