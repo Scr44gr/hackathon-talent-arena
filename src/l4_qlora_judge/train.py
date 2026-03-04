@@ -1,4 +1,5 @@
 import argparse
+import inspect
 import json
 import os
 import random
@@ -72,6 +73,42 @@ def to_training_row(
 
     text = f"{prompt}{reasoning} [RESULT] {label}{eos_token}"
     return {"prompt_sft": text}
+
+
+def build_sft_config(cfg: TrainConfig, bf16: bool, fp16: bool) -> SFTConfig:
+    candidate_kwargs: dict[str, Any] = {
+        "output_dir": cfg.output_dir,
+        "dataset_text_field": "prompt_sft",
+        "max_seq_length": cfg.max_seq_length,
+        "max_length": cfg.max_seq_length,
+        "per_device_train_batch_size": cfg.train_batch_size,
+        "per_device_eval_batch_size": cfg.eval_batch_size,
+        "gradient_accumulation_steps": cfg.gradient_accumulation_steps,
+        "learning_rate": cfg.learning_rate,
+        "num_train_epochs": cfg.num_train_epochs,
+        "warmup_ratio": cfg.warmup_ratio,
+        "weight_decay": cfg.weight_decay,
+        "max_grad_norm": cfg.max_grad_norm,
+        "logging_steps": cfg.logging_steps,
+        "save_steps": cfg.save_steps,
+        "eval_steps": cfg.eval_steps,
+        "save_total_limit": cfg.save_total_limit,
+        "evaluation_strategy": "steps",
+        "eval_strategy": "steps",
+        "save_strategy": "steps",
+        "optim": "paged_adamw_8bit",
+        "lr_scheduler_type": "cosine",
+        "bf16": bf16,
+        "fp16": fp16,
+        "gradient_checkpointing": True,
+        "report_to": "none",
+        "seed": cfg.seed,
+        "packing": False,
+    }
+
+    valid_keys = set(inspect.signature(SFTConfig).parameters)
+    kwargs = {k: v for k, v in candidate_kwargs.items() if k in valid_keys}
+    return SFTConfig(**kwargs)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -157,42 +194,22 @@ def main(argv: list[str] | None = None) -> None:
         target_modules=cfg.target_modules,
     )
 
-    train_args = SFTConfig(
-        output_dir=cfg.output_dir,
-        dataset_text_field="prompt_sft",
-        max_seq_length=cfg.max_seq_length,
-        per_device_train_batch_size=cfg.train_batch_size,
-        per_device_eval_batch_size=cfg.eval_batch_size,
-        gradient_accumulation_steps=cfg.gradient_accumulation_steps,
-        learning_rate=cfg.learning_rate,
-        num_train_epochs=cfg.num_train_epochs,
-        warmup_ratio=cfg.warmup_ratio,
-        weight_decay=cfg.weight_decay,
-        max_grad_norm=cfg.max_grad_norm,
-        logging_steps=cfg.logging_steps,
-        save_steps=cfg.save_steps,
-        eval_steps=cfg.eval_steps,
-        save_total_limit=cfg.save_total_limit,
-        evaluation_strategy="steps",
-        save_strategy="steps",
-        optim="paged_adamw_8bit",
-        lr_scheduler_type="cosine",
-        bf16=bf16,
-        fp16=fp16,
-        gradient_checkpointing=True,
-        report_to="none",
-        seed=cfg.seed,
-        packing=False,
-    )
+    train_args = build_sft_config(cfg, bf16, fp16)
 
-    trainer = SFTTrainer(
-        model=model,
-        args=train_args,
-        train_dataset=split["train"],
-        eval_dataset=split["test"],
-        peft_config=peft_config,
-        tokenizer=tokenizer,
-    )
+    trainer_kwargs: dict[str, Any] = {
+        "model": model,
+        "args": train_args,
+        "train_dataset": split["train"],
+        "eval_dataset": split["test"],
+        "peft_config": peft_config,
+    }
+    trainer_sig = inspect.signature(SFTTrainer.__init__).parameters
+    if "processing_class" in trainer_sig:
+        trainer_kwargs["processing_class"] = tokenizer
+    elif "tokenizer" in trainer_sig:
+        trainer_kwargs["tokenizer"] = tokenizer
+
+    trainer = SFTTrainer(**trainer_kwargs)
 
     trainer.train()
     trainer.save_model(cfg.output_dir)
