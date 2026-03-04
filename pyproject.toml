@@ -4,21 +4,28 @@ version = "0.1.0"
 description = "QLoRA pipeline for training and evaluating LLMs on judge tasks."
 requires-python = ">=3.11"
 dependencies = [
-  "accelerate>=1.12.0",
-  "bitsandbytes>=0.45.0",
-  "datasets>=3.1.0",
-  "numpy>=1.26.0",
-  "pandas>=2.2.0",
-  "peft>=0.14.0",
+  "accelerate",
+  "bitsandbytes",
+  "datasets",
+  "ipykernel",
+  "matplotlib",
+  "numpy==1.26.4",
+  "pandas",
+  "peft",
+  "pyarrow",
   "pydantic>=2.10.0",
   "pydantic-ai-slim[openai]>=0.0.25",
   "pydantic-evals>=0.0.25",
-  "python-dotenv>=1.0.0",
-  "pyyaml>=6.0.0",
-  "scikit-learn>=1.5.0",
-  "torch>=2.6.0",
-  "transformers>=5.2.0",
-  "trl>=0.29.0"
+  "python-dotenv",
+  "pyyaml",
+  "scikit-learn==1.5.2",
+  "seaborn",
+  "sentencepiece==0.1.99",
+  "torch==2.5.1",
+  "torchaudio==2.5.1",
+  "torchvision==0.20.1",
+  "transformers",
+  "trl"
 ]
 
 [project.scripts]
