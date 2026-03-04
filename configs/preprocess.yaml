@@ -1,0 +1,15 @@
+seed: 42
+
+input_file: ../data/dataset_sample.json
+output_dir: ../data/processed
+
+val_size: 0.15
+test_size: 0.0
+
+drop_unlabeled: true
+dedupe_by_message_id: true
+dedupe_by_content: true
+
+min_question_chars: 8
+min_answer_chars: 8
+stratify_by_category: true

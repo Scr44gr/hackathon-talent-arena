@@ -1,4 +1,3 @@
-
 import argparse
 import sys
 from pathlib import Path
@@ -28,6 +27,11 @@ def main() -> None:
         "--config", required=True, help="Path to evaluation YAML config"
     )
 
+    prep_parser = sub.add_parser("preprocess", help="Run dataset preprocessing")
+    prep_parser.add_argument(
+        "--config", required=True, help="Path to preprocessing YAML config"
+    )
+
     args = parser.parse_args()
 
     if args.command == "train":
@@ -46,6 +50,12 @@ def main() -> None:
         from l4_qlora_judge.eval_pydantic_evals import main as eval_main
 
         eval_main(["--config", args.config])
+        return
+
+    if args.command == "preprocess":
+        from l4_qlora_judge.preprocess import main as preprocess_main
+
+        preprocess_main(["--config", args.config])
         return
 
     raise RuntimeError(f"Unknown command: {args.command}")
